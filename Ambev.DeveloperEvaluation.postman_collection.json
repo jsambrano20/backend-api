@@ -1,0 +1,120 @@
+{
+  "info": {
+    "name": "Ambev DeveloperEvaluation - Sales API",
+    "description": "CRUD + cancellation flows for the Sales API (DeveloperStore evaluation project).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5298" },
+    { "key": "saleId", "value": "" },
+    { "key": "itemId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Create Sale",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "  var body = pm.response.json();",
+              "  pm.collectionVariables.set('saleId', body.data.id);",
+              "  pm.collectionVariables.set('itemId', body.data.items[0].id);",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/Sales", "host": ["{{baseUrl}}"], "path": ["api", "Sales"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"saleNumber\": \"SALE-0001\",\n  \"saleDate\": \"2026-06-18T00:00:00Z\",\n  \"customerId\": \"11111111-1111-1111-1111-111111111111\",\n  \"customerName\": \"John Doe\",\n  \"branchId\": \"22222222-2222-2222-2222-222222222222\",\n  \"branchName\": \"Main Branch\",\n  \"items\": [\n    { \"productId\": \"33333333-3333-3333-3333-333333333333\", \"productName\": \"Beer Box\", \"quantity\": 5, \"unitPrice\": 10.0 },\n    { \"productId\": \"44444444-4444-4444-4444-444444444444\", \"productName\": \"Soda Pack\", \"quantity\": 15, \"unitPrice\": 5.0 }\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "Get Sale by Id",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/Sales/{{saleId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "Sales", "{{saleId}}"]
+        }
+      }
+    },
+    {
+      "name": "List Sales (paged/filtered/ordered)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/Sales?_page=1&_size=10&_order=saleDate desc",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "Sales"],
+          "query": [
+            { "key": "_page", "value": "1" },
+            { "key": "_size", "value": "10" },
+            { "key": "_order", "value": "saleDate desc" },
+            { "key": "customerId", "value": "", "disabled": true },
+            { "key": "branchId", "value": "", "disabled": true },
+            { "key": "status", "value": "", "disabled": true }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Update Sale",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": {
+          "raw": "{{baseUrl}}/api/Sales/{{saleId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "Sales", "{{saleId}}"]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"saleNumber\": \"SALE-0001\",\n  \"saleDate\": \"2026-06-18T00:00:00Z\",\n  \"customerId\": \"11111111-1111-1111-1111-111111111111\",\n  \"customerName\": \"John Doe Updated\",\n  \"branchId\": \"22222222-2222-2222-2222-222222222222\",\n  \"branchName\": \"Main Branch\",\n  \"items\": [\n    { \"productId\": \"33333333-3333-3333-3333-333333333333\", \"productName\": \"Beer Box\", \"quantity\": 12, \"unitPrice\": 10.0 }\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "Cancel Sale Item",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "{{baseUrl}}/api/Sales/{{saleId}}/items/{{itemId}}/cancel",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "Sales", "{{saleId}}", "items", "{{itemId}}", "cancel"]
+        }
+      }
+    },
+    {
+      "name": "Cancel Sale",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "{{baseUrl}}/api/Sales/{{saleId}}/cancel",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "Sales", "{{saleId}}", "cancel"]
+        }
+      }
+    },
+    {
+      "name": "Delete Sale",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{baseUrl}}/api/Sales/{{saleId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "Sales", "{{saleId}}"]
+        }
+      }
+    }
+  ]
+}
